@@ -21,7 +21,7 @@ public $successStatus = 200;
             $success['token'] =  $user->createToken('MyApp')-> accessToken;
             $success['id'] =  $user->id;
             $success['name'] =  $user->name;
-            return response()->json($success, $this-> successStatus); 
+            return response()->json(['error'=> FALSE, 'success' => $success], $this-> successStatus); 
         } 
         else{ 
             return response()->json(['error'=>'Unauthorised'], 401); 
