@@ -25,4 +25,11 @@ protected $fillable = [
 protected $hidden = [
 'password', 'remember_token',
 ];
+
+ // Create relationship
+ public function ppukm(){
+  return $this->hasMany('App\PPUKM');
+}
+
+
 }

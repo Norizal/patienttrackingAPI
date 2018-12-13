@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('login', 'API\UserController@login');
-Route::post('register', 'API\UserController@register');
+Route::post('loginPPUKM', 'API\PPUKMUserController@login');
+Route::post('registerPPUKM', 'API\PPUKMUserController@register');
 Route::group(['middleware' => 'auth:api'], function(){
-Route::post('details', 'API\UserController@details');
+Route::post('details', 'API\PPUKMUserController@details');
 Route::get('logout', 'API\UserController@logout')->name('logout');
 });
