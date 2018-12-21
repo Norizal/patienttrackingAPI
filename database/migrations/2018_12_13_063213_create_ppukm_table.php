@@ -21,7 +21,10 @@ class CreatePpukmTable extends Migration
             $table->string('gender');
             $table->string('race');
             $table->string('phonenumber');
+            $table->integer('user_id')->unsigned();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

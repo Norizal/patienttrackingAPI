@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddUserIdToPpukm extends Migration
+class CreateMedicalStatusTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddUserIdToPpukm extends Migration
      */
     public function up()
     {
-        Schema::table('ppukm', function (Blueprint $table) {
-            $table->integer('user_id');
+        Schema::create('medical_status', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class AddUserIdToPpukm extends Migration
      */
     public function down()
     {
-        Schema::table('ppukm', function (Blueprint $table) {
-            $table->dropColumn('user_id');
-        });
+        Schema::dropIfExists('medical_status');
     }
 }

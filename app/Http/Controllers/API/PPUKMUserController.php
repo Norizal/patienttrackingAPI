@@ -18,8 +18,9 @@ public $successStatus = 200;
      * 
      * @return \Illuminate\Http\Response 
      */ 
-    public function login(){ 
-        if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){ 
+    public function login(){
+        
+        if(Auth::attempt(['email' => request('email'), 'password' => request('password'), 'typeuser' => 2])){ 
             $user = Auth::user(); 
             $success['token'] =  $user->createToken('MyApp')-> accessToken;
             $success['id'] =  $user->id;
@@ -52,24 +53,28 @@ public $successStatus = 200;
             return response()->json(['error'=>$validator->errors()], 401);            
         }else {
 
-        $data = new \App\PPUKM();
-        $data->name = $name;
-        $data->staffid = $staffid;
-        $data->email = $email;
-        $data->gender = $gender;
-        $data->race = $race;
-        $data->phonenumber = $phonenumber;
-        $data->password = bcrypt($password);
-
-        if($data->save()){
-            
             $dataUser = new \App\User();
             $dataUser->name = $name;
             $dataUser->email = $email;
             $dataUser->password = bcrypt($password);
-            $dataUser->typeuser = 1;
+            $dataUser->typeuser = 2;
 
-            if($dataUser->save()){
+        if($dataUser->save()){
+        
+            $id =  $dataUser->id;
+            
+            $data = new \App\PPUKM;
+
+            $data->name = $name;
+            $data->staffid = $staffid;
+            $data->email = $email;
+            $data->gender = $gender;
+            $data->race = $race;
+            $data->phonenumber = $phonenumber;
+            $data->user_id = $id;
+    
+
+            if($data->save()){
                 $success['token'] =  $dataUser->createToken('MyApp')-> accessToken; 
                 $success['name'] =  $dataUser->name;
             }
@@ -84,12 +89,7 @@ public $successStatus = 200;
 
         }
        
-        // $input = $request->all(); 
-        // $input['password'] = bcrypt($input['password']); 
-        // $userPPUKM = DB::insert('insert into ppukm (name, staffid, email, gender, race, phonenumber, password) values (?, ?, ?, ?, ?, ?, ?)', [$name, $staffid, $email, $gender, $race, $phonenumber, $password]);
-        // $user = DB::insert('insert into users (id, name, email, password, typeuser, created_at, updated_at) values (?, ?,?, ?, ?, ?)', [$name, $email, $password, 1]);
-        // $success['token'] =  $user->createToken('MyApp')-> accessToken; 
-        // $success['name'] =  $user->name;
+    
         return response()->json(['success'=>$success], $this-> successStatus); 
     }
 /** 

@@ -10,14 +10,10 @@ class Kin extends Model
    protected $table = 'kin';
    //Primary Key
    public $primaryKey = 'id';
-   // Timestamps
-   protected $fillable = [
-      'name',
-      'icnumber',
-      'email',
-      'gender',
-      'race',
-      'phonenumber',
-      'password'
-    ];
+
+     // Create relationship
+     public function user(){
+      return $this->belongsTo('App\User');
+  }
+
 }

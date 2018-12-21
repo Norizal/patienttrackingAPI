@@ -31,5 +31,39 @@ protected $hidden = [
   return $this->hasMany('App\PPUKM');
 }
 
+ // Create relationship
+ public function kin(){
+  return $this->hasMany('App\Kin');
+}
+
+// Create relationship
+public function patient(){
+  return $this->hasMany('App\Patient');
+}
+
+// Create relationship
+public function patient_hukm(){
+  return $this->hasMany('App\PatientHUKM');
+}
+
+// Create relationship
+public function medicalstatus(){
+  return $this->hasMany('App\MedicalStatus');
+}
+
+// Create relationship
+public function location(){
+  return $this->hasMany('App\Location');
+}
+
+// Create relationship
+public function beacon(){
+  return $this->hasMany('App\Beacon');
+}
+
+
+
+
+
 
 }

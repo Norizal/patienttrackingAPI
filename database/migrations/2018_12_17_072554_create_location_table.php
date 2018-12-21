@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddPasswordToKin extends Migration
+class CreateLocationTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddPasswordToKin extends Migration
      */
     public function up()
     {
-        Schema::table('kin', function (Blueprint $table) {
-            $table->string('password');
+        Schema::create('location', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class AddPasswordToKin extends Migration
      */
     public function down()
     {
-        Schema::table('kin', function (Blueprint $table) {
-            $table->dropColumn('password');
-        });
+        Schema::dropIfExists('location');
     }
 }
