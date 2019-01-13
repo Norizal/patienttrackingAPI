@@ -42,7 +42,7 @@ class KinCommunicationController extends Controller
 
             $dataMessage = KinChat::where('patient_id',  $patientid)->count();
             if($dataMessage > 0){
-                return response()->json(['error'=> TRUE, 'error_message'=>"Message already sent"], 409);
+                return response()->json(['error'=> TRUE, 'error_message'=>"Message already sent"]);
             }else {
 
     

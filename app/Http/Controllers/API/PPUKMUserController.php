@@ -29,41 +29,40 @@ public $successStatus = 200;
          if ($validator->fails()) {
             return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
         }else {
-            if(Auth::attempt(['email' => request('email'), 'password' => request('password'), 'typeuser' => 2])){ 
-                $user = Auth::user();
-                $id =  $user->id;
-                $data = PPUKM::where('user_id',  $id)->first(); 
+            $email= $request->input('email');
 
-                $emaildata = $user->email;
-                $passworddata = $user->password;
-              
+            $emaildata = User::where('email', $email)->count();
 
-                $email= $request->input('email');
-                $password = $request->input('password');
+            if($emaildata< 1){
+                return response()->json(['error'=> TRUE, 'error_message'=>"Email not found"]); 
 
-                        if($emaildata != $email){
-                            return response()->json(['error'=> TRUE, 'error_message'=>"Email not found"], 409); 
-
-                        }else{
-                            if(Hash::check($password, $passworddata)){
-                                $success['token'] =  $user->createToken('MyApp')-> accessToken;
-                                $success['name'] =  $user->name;
-                                $success['email'] =  $user->email;
-                                $success['staffid'] =  $data->ppukm_staffid;
-                                $success['phonenumber'] =  $data->ppukm_phonenumber;
-                                return response()->json(['error'=> FALSE, 'success' => $success], $this-> successStatus); 
-                               
-                            }else{
-                                return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"], 409);
-                               
-                            } 
-                        }
-                       
+            }else{
+                if(Auth::attempt(['email' => request('email'), 'password' => request('password'), 'typeuser' => 2])){ 
+                    $user = Auth::user();
+                    $id =  $user->id;
+                    $data = PPUKM::where('user_id',  $id)->first(); 
+                
+                        $success['token'] =  $user->createToken('MyApp')-> accessToken;
+                        $success['name'] =  $user->name;
+                        $success['email'] =  $user->email;
+                        $success['staffid'] =  $data->ppukm_staffid;
+                        $success['phonenumber'] =  $data->ppukm_phonenumber;
+                        return response()->json(['error'=> FALSE, 'success' => $success], $this-> successStatus); 
+                                   
+                    
+                    }else{
+                        return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"]);
                     }
-             else{ 
-                return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"], 409);
-             }
-             return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
+
+                    return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ]);
+
+
+
+            }
+
+
+
+            return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
         }
     }
 /** 
@@ -98,9 +97,9 @@ public $successStatus = 200;
                     $dataEmail = User::where('email',  $email)->count();
 
                     if($dataStaffID > 0){
-                        return response()->json(['error'=> TRUE, 'error_message'=>"Staff ID already exist"], 409); 
+                        return response()->json(['error'=> TRUE, 'error_message'=>"Staff ID already exist"]); 
                     }elseif($dataEmail > 0){
-                        return response()->json(['error'=> TRUE, 'error_message'=>"Email already exist"], 409);
+                        return response()->json(['error'=> TRUE, 'error_message'=>"Email already exist"]);
                     }else{
 
                     $dataUser = new \App\User();

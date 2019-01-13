@@ -29,7 +29,7 @@ class MedicalStatusController extends Controller
             $name = $request->input('name');
             $dataName = MedicalStatus::where('medical_status_name',  $name)->count();
             if($dataName > 0){
-                return response()->json(['error'=> TRUE, 'error_message'=>"Name already exist"], 409);
+                return response()->json(['error'=> TRUE, 'error_message'=>"Name already exist"]);
             }else {
 
     

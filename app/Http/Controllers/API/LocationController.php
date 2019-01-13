@@ -28,7 +28,7 @@ class LocationController extends Controller
             $name = $request->input('name');
             $dataName = Location::where('location_name',  $name)->count();
             if($dataName > 0){
-                return response()->json(['error'=> TRUE, 'error_message'=>"Location Name already exist"], 409);
+                return response()->json(['error'=> TRUE, 'error_message'=>"Location Name already exist"]);
             }else {
 
     

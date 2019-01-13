@@ -44,7 +44,7 @@ public $successStatus = 200;
                 $password = $request->input('password');
 
                         if($emaildata != $email){
-                            return response()->json(['error'=> TRUE, 'error_message'=>"Email not found"], 409); 
+                            return response()->json(['error'=> TRUE, 'error_message'=>"Email not found"]); 
 
                         }else{
                             if(Hash::check($password, $passworddata)){
@@ -56,14 +56,14 @@ public $successStatus = 200;
                                 return response()->json(['error'=> FALSE, 'success' => $success], $this-> successStatus); 
                                
                             }else{
-                                return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"], 409);
+                                return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"]);
                                
                             } 
                         }
                        
                     }
              else{ 
-                return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"], 409);
+                return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"]);
              }
              return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
         }
@@ -100,9 +100,9 @@ public $successStatus = 200;
                      $dataEmail = User::where('email',  $email)->count();
  
                      if($dataICID > 0){
-                         return response()->json(['error'=> TRUE, 'error_message'=>"I/C Number already exist"], 409); 
+                         return response()->json(['error'=> TRUE, 'error_message'=>"I/C Number already exist"]); 
                      }elseif($dataEmail > 0){
-                         return response()->json(['error'=> TRUE, 'error_message'=>"Email already exist"], 409);
+                         return response()->json(['error'=> TRUE, 'error_message'=>"Email already exist"]);
                      }else{
  
                      $dataUser = new \App\User();

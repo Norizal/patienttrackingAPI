@@ -36,11 +36,11 @@ class BeaconController extends Controller
             $dataUUID = Beacon::where('beacon_uuid',  $uuid)->count();
 
             if($dataUUID >0){
-                return response()->json(['error'=> TRUE, 'error_message'=>"Beacon UUID already exist"], 409); 
+                return response()->json(['error'=> TRUE, 'error_message'=>"Beacon UUID already exist"]); 
             }else{
                 $dataName = Beacon::where('beacon_name',  $name)->count();
                 if($dataName > 0){
-                    return response()->json(['error'=> TRUE, 'error_message'=>"Beacon Name already exist"], 409);
+                    return response()->json(['error'=> TRUE, 'error_message'=>"Beacon Name already exist"]);
                 }else {
                         $data = new \App\Beacon();
                         $data->beacon_name = $name;

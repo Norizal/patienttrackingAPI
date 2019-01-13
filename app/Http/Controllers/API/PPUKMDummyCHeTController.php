@@ -43,11 +43,11 @@ class PPUKMDummyCHeTController extends Controller
             $dataIC = PatientHUKM::where('hukm_icnumber',  $icnumber)->count();
 
             if($dataIC >0){
-                return response()->json(['error'=> TRUE, 'error_message'=>"IC Number already exist"], 409); 
+                return response()->json(['error'=> TRUE, 'error_message'=>"IC Number already exist"]); 
             }else{
                 $dataMRN = PatientHUKM::where('hukm_mrn',  $mrn)->count();
                 if($dataMRN > 0){
-                    return response()->json(['error'=> TRUE, 'error_message'=>"MRN already exist"], 409);
+                    return response()->json(['error'=> TRUE, 'error_message'=>"MRN already exist"]);
                 }else{
                     $dataUser = new \App\PatientHUKM();
                     $dataUser->hukm_icnumber = $icnumber;
