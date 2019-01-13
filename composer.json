@@ -7,6 +7,7 @@
     "require": {
         "php": "^7.2",
         "barryvdh/laravel-cors": "^0.11.2",
+        "doctrine/dbal": "^2.9",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.7.*",
         "laravel/passport": "^7.0",

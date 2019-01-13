@@ -61,6 +61,16 @@ public function beacon(){
   return $this->hasMany('App\Beacon');
 }
 
+// Create relationship
+public function kinchat(){
+  return $this->hasMany('App\KinChat');
+}
+
+// Create relationship
+public function ppukmchat(){
+  return $this->hasMany('App\PPUKMChat');
+}
+
 
 
 

@@ -7,6 +7,7 @@ use App\User;
 use App\PPUKM;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Lcobucci\JWT\Parser;
 
@@ -18,18 +19,52 @@ public $successStatus = 200;
      * 
      * @return \Illuminate\Http\Response 
      */ 
-    public function login(){
-        
-        if(Auth::attempt(['email' => request('email'), 'password' => request('password'), 'typeuser' => 2])){ 
-            $user = Auth::user(); 
-            $success['token'] =  $user->createToken('MyApp')-> accessToken;
-            $success['id'] =  $user->id;
-            $success['name'] =  $user->name;
-            return response()->json(['error'=> FALSE, 'success' => $success], $this-> successStatus); 
-        } 
-        else{ 
-            return response()->json(['error'=>'Unauthorised'], 401); 
-        } 
+    public function login(Request $request){
+
+        $validator = Validator::make($request->all(), [ 
+            'email'=>'required' , 
+            'password'=>'required',
+         ]);
+
+         if ($validator->fails()) {
+            return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
+        }else {
+            if(Auth::attempt(['email' => request('email'), 'password' => request('password'), 'typeuser' => 2])){ 
+                $user = Auth::user();
+                $id =  $user->id;
+                $data = PPUKM::where('user_id',  $id)->first(); 
+
+                $emaildata = $user->email;
+                $passworddata = $user->password;
+              
+
+                $email= $request->input('email');
+                $password = $request->input('password');
+
+                        if($emaildata != $email){
+                            return response()->json(['error'=> TRUE, 'error_message'=>"Email not found"], 409); 
+
+                        }else{
+                            if(Hash::check($password, $passworddata)){
+                                $success['token'] =  $user->createToken('MyApp')-> accessToken;
+                                $success['name'] =  $user->name;
+                                $success['email'] =  $user->email;
+                                $success['staffid'] =  $data->ppukm_staffid;
+                                $success['phonenumber'] =  $data->ppukm_phonenumber;
+                                return response()->json(['error'=> FALSE, 'success' => $success], $this-> successStatus); 
+                               
+                            }else{
+                                return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"], 409);
+                               
+                            } 
+                        }
+                       
+                    }
+             else{ 
+                return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"], 409);
+             }
+             return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
+        }
     }
 /** 
      * Register api 
@@ -39,58 +74,74 @@ public $successStatus = 200;
     public function register(Request $request) 
     { 
         $validator = Validator::make($request->all(), [ 
-            $name = $request->input('name') ,
-            $staffid = $request->input('staffid'), 
-            $email= $request->input('email'),
-            $gender = $request->input('gender'),
-            $race = $request->input('race'),
-            $phonenumber = $request->input('phonenumber'), 
-            $password = $request->input('password'), 
-            'c_password' => 'required|same:password',  
+           'name'=>'required' ,
+           'staffid'=>'required', 
+           'email'=>'required|email|max:255|unique:users',
+           'phonenumber'=>'required', 
+           'password'=>'required|min:6', 
+           'c_password' => 'required|same:password',  
         ]);
 
-        if ($validator->fails()) { 
-            return response()->json(['error'=>$validator->errors()], 401);            
+
+
+
+        if ($validator->fails()) {
+            return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
         }else {
+                    $name = $request->input('name');
+                    $staffid = $request->input('staffid');
+                    $email= $request->input('email');
+                    $phonenumber = $request->input('phonenumber');
+                    $password = $request->input('password');
 
-            $dataUser = new \App\User();
-            $dataUser->name = $name;
-            $dataUser->email = $email;
-            $dataUser->password = bcrypt($password);
-            $dataUser->typeuser = 2;
+                    $dataStaffID = PPUKM::where('ppukm_staffid',  $staffid)->count();
+                    $dataEmail = User::where('email',  $email)->count();
 
-        if($dataUser->save()){
+                    if($dataStaffID > 0){
+                        return response()->json(['error'=> TRUE, 'error_message'=>"Staff ID already exist"], 409); 
+                    }elseif($dataEmail > 0){
+                        return response()->json(['error'=> TRUE, 'error_message'=>"Email already exist"], 409);
+                    }else{
+
+                    $dataUser = new \App\User();
+                    $dataUser->name = $name;
+                    $dataUser->email = $email;
+                    $dataUser->password = bcrypt($password);
+                    $dataUser->typeuser = 2;
+
+                         if($dataUser->save()){
         
-            $id =  $dataUser->id;
-            
-            $data = new \App\PPUKM;
-
-            $data->name = $name;
-            $data->staffid = $staffid;
-            $data->email = $email;
-            $data->gender = $gender;
-            $data->race = $race;
-            $data->phonenumber = $phonenumber;
-            $data->user_id = $id;
+                                 $id =  $dataUser->id;
+                
+                                 $data = new \App\PPUKM;
     
+                                $data->ppukm_name = $name;
+                                $data->ppukm_staffid = $staffid;
+                                $data->ppukm_email = $email;
+                                $data->ppukm_phonenumber = $phonenumber;
+                                $data->user_id = $id;
 
-            if($data->save()){
-                $success['token'] =  $dataUser->createToken('MyApp')-> accessToken; 
-                $success['name'] =  $dataUser->name;
-            }
-            else{
-              return response()->json(['status' => 'error', 'message' => 'Internal Server Error' ],500);
-            }
-            
-          } else {
-            return response()->json(['status' => 'error', 'message' => 'Internal Server Error' ],500);
-          }
+                                    if($data->save()){
+                                        $success['token'] =  $dataUser->createToken('MyApp')-> accessToken; 
+                                        $success['name'] =  $dataUser->name;
+                                        $success['email'] =  $dataUser->email;
+                                        $success['staffid'] =  $data->ppukm_staffid;
+                                        $success['phonenumber'] =  $data->ppukm_phonenumber;
 
+                                        return response()->json(['error'=> FALSE,'success'=>$success], $this-> successStatus); 
+                                    }
+                                    else{
+                                    return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
+                                    }
+
+                             } else {
+                                return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
+                            }
+
+            } 
+            return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
 
         }
-       
-    
-        return response()->json(['success'=>$success], $this-> successStatus); 
     }
 /** 
      * details api 

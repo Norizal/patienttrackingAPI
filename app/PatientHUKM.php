@@ -9,7 +9,7 @@ class PatientHUKM extends Model
      //Table name
    protected $table = 'patient_hukm';
    //Primary Key
-   public $primaryKey = 'id';
+   public $primaryKey = 'hukm_id';
    // Timestamps
    public $timeStamps = true;
 

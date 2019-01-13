@@ -4,12 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Kin extends Model
+class PPUKMChat extends Model
 {
-   //Table name
-   protected $table = 'kin';
+     //Table name
+   protected $table = 'ppukm_chat';
    //Primary Key
-   public $primaryKey = 'kin_id';
+   public $primaryKey = 'ppukm_chat_id';
 
      // Create relationship
      public function user(){

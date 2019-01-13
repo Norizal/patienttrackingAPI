@@ -14,15 +14,17 @@ class CreatePatientHukmTable extends Migration
     public function up()
     {
         Schema::create('patient_hukm', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('icnumber')->unique();
-            $table->string('name');
-            $table->string('mrn')->unique();
-            $table->string('gender');
-            $table->string('age');
-            $table->string('race');
-            $table->string('phonenumber');
+            $table->increments('hukm_id');
+            $table->string('hukm_icnumber')->unique();
+            $table->string('hukm_name');
+            $table->string('hukm_mrn')->unique();
+            $table->string('hukm_gender');
+            $table->string('hukm_age');
+            $table->string('hukm_race');
+            $table->string('hukm_phonenumber');
             $table->timestamps();
+
+          
         });
     }
 

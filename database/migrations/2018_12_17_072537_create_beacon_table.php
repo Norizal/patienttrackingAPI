@@ -14,12 +14,14 @@ class CreateBeaconTable extends Migration
     public function up()
     {
         Schema::create('beacon', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name')->unique();
-            $table->string('uuid')->unique();
-            $table->integer('major')->unique();
-            $table->integer('minor')->unique();
+            $table->increments('beacon_id');
+            $table->string('beacon_name');
+            $table->string('beacon_uuid')->unique();
+            $table->integer('beacon_major');
+            $table->integer('beacon_minor');
             $table->timestamps();
+
+          
         });
     }
 

@@ -4,19 +4,18 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request; 
 use App\Http\Controllers\Controller; 
 use App\User;
-use App\PPUKM;
+use App\Kin;
 use App\Patient;
-use App\PPUKMChat;
 use App\KinChat;
+use App\PPUKMChat;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Lcobucci\JWT\Parser;
 
-class PPUKMCommunicationController extends Controller
+class KinCommunicationController extends Controller
 {
-
     public $successStatus = 200;
 
     public function createChat(Request $request) 
@@ -33,24 +32,24 @@ class PPUKMCommunicationController extends Controller
 
             $user = Auth::user();
             $userid = $user->id;
-            $ppukm = PPUKM::where('user_id',  $userid)->first();
-            $ppukmid = $ppukm->ppukm_id;
-            $patient = Patient::where('ppukm_id',  $ppukmid)->first();
+            $kin = Kin::where('user_id',  $userid)->first();
+            $kinid = $kin->kin_id;
+            $patient = Patient::where('kin_id',  $kinid)->first();
             $patientid = $patient->patient_id;
             
             $message= $request->input('message');
 
 
-            $dataMessage = PPUKMChat::where('patient_id',  $patientid)->count();
+            $dataMessage = KinChat::where('patient_id',  $patientid)->count();
             if($dataMessage > 0){
                 return response()->json(['error'=> TRUE, 'error_message'=>"Message already sent"], 409);
             }else {
 
     
-            $data = new \App\PPUKMChat();
-            $data->ppukm_chat_message = $message;
-            $data->ppukm_chat_status_sent = 1;
-            $data->ppukm_id = $ppukmid;
+            $data = new \App\KinChat();
+            $data->kin_chat_message = $message;
+            $data->kin_chat_status_sent = 1;
+            $data->kin_id = $kinid;
             $data->patient_id = $patientid;
             $data->save();
             return response()->json(['error'=> FALSE,'success'=>$data], $this-> successStatus); 
@@ -66,14 +65,14 @@ class PPUKMCommunicationController extends Controller
     { 
         $user = Auth::user();
         $userid = $user->id;
-        $ppukm = PPUKM::where('user_id',  $userid)->first();
-        $ppukmid = $ppukm->ppukm_id;
-        $patient = Patient::where('ppukm_id',  $ppukmid)->first();
+        $kin = Kin::where('user_id',  $userid)->first();
+        $kinid = $kin->kin_id;
+        $patient = Patient::where('kin_id',  $kinid)->first();
         $patientid = $patient->patient_id;
         $chat = PPUKMChat::where('patient_id',  $patientid)->first()->all();
 
 
-        return response()->json(['success'=>$chat], $this-> successStatus); 
+        return response()->json(['error'=> FALSE, 'success'=>$chat], $this-> successStatus); 
 
         
 
@@ -83,16 +82,16 @@ class PPUKMCommunicationController extends Controller
     { 
         $user = Auth::user();
         $userid = $user->id;
-        $ppukm = PPUKM::where('user_id',  $userid)->first();
-        $ppukmid = $ppukm->ppukm_id;
-        $patient = Patient::where('ppukm_id',  $ppukmid)->first();
+        $kin = Kin::where('user_id',  $userid)->first();
+        $kinid = $kin->kin_id;
+        $patient = Patient::where('kin_id',  $kinid)->first();
         $patientid = $patient->patient_id;
-        $chat = KinChat::where('patient_id',  $patientid)->count();
+        $chat = PPUKMChat::where('patient_id',  $patientid)->count();
 
         if($chat > 0)
           {
-            KinChat::where('patient_id', $chat)->update(array(
-                    'kin_chat_status_read'=>1,
+            PPUKMChat::where('patient_id', $chat)->update(array(
+                    'ppukm_chat_status_read'=>1,
 
                 ));
             return response()->json(['error'=> FALSE, 'success' => "Your message has been read"], $this-> successStatus);     

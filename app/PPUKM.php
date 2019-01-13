@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class PPUKM extends Model
 {
    //Table name
-   protected $table = 'ppukm';
+   protected $table = 'ppukm' ;
    //Primary Key
-   public $primaryKey = 'id';
+   public $primaryKey = 'ppukm_id';
+   
   
 
      // Create relationship

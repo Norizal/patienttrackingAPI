@@ -9,7 +9,7 @@ class Beacon extends Model
      //Table name
    protected $table = 'beacon';
    //Primary Key
-   public $primaryKey = 'id';
+   public $primaryKey = 'beacon_id';
    // Timestamps
    public $timeStamps = true;
 

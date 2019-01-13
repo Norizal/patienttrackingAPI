@@ -14,17 +14,19 @@ class CreatePpukmTable extends Migration
     public function up()
     {
         Schema::create('ppukm', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('staffid')->unique();
-            $table->string('email')->unique();
-            $table->string('gender');
-            $table->string('race');
-            $table->string('phonenumber');
+            $table->increments('ppukm_id');
+            $table->string('ppukm_name');
+            $table->string('ppukm_staffid')->unique();
+            $table->string('ppukm_email')->unique();
+            $table->string('ppukm_phonenumber');
             $table->integer('user_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+           
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+           
         });
     }
 

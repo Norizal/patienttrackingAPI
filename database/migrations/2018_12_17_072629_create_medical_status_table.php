@@ -14,9 +14,11 @@ class CreateMedicalStatusTable extends Migration
     public function up()
     {
         Schema::create('medical_status', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name')->unique();
+            $table->increments('medical_status_id');
+            $table->string('medical_status_name')->unique();
             $table->timestamps();
+
+           
         });
     }
 

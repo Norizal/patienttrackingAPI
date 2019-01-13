@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
 use App\User;
 use App\Patient;
+use App\PPUKM;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
 use Illuminate\Support\Facades\DB;
@@ -21,24 +22,26 @@ class PPUKMPatientController extends Controller
             $patient_hukm_id = $request->input('hukm_id') ,
             $beacon_id = $request->input('beacon_id'),
             $medical_status_id = $request->input('medical_status_id'),
-            $kin_id = $request->input('kin_id')     
+               
         ]);
 
         if ($validator->fails()) { 
-            return response()->json(['error'=> FALSE,'error'=>$validator->errors()], 401);            
+            return response()->json(['error'=> FALSE,'error_message'=>$validator->errors()], 401);            
         }else {
 
-            $user_id = Auth::user()->id;
-            $rand = $this->generateRandomString(6);
+            $user = Auth::user();
+            $user_id = $user->id;
+            $data = PPUKM::where('user_id',  $user_id)->first();
+            // $ppukm_id =  DB::select('SELECT ppukm.ppukm_id FROM ppukm WHERE user_id = :user_id', ['user_id' => $user_id]);
+             $rand = $this->generateRandomString(6);
     
             $dataUser = new \App\Patient();
             $dataUser->hukm_id= $patient_hukm_id;
             $dataUser->beacon_id = $beacon_id;
             $dataUser->medical_status_id = $medical_status_id;
             $dataUser->location_id = 1;
-            $dataUser->kin_id = $kin_id;
             $dataUser->barcode = $rand;
-            $dataUser->user_id = $user_id;
+            $dataUser->ppukm_id = $data->ppukm_id;
             $dataUser->save();
             return response()->json(['success'=>$dataUser], $this-> successStatus); 
           }

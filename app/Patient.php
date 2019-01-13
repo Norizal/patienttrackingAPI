@@ -9,9 +9,11 @@ class Patient extends Model
     //Table name
     protected $table = 'patient';
     //Primary Key
-    public $primaryKey = 'id';
+    public $primaryKey = 'patient_id';
     // Timestamps
     public $timeStamps = true;
+
+    
  
       // Create relationship
       public function user(){

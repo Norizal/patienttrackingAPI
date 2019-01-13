@@ -9,7 +9,7 @@ class MedicalStatus extends Model
      //Table name
    protected $table = 'medical_status';
    //Primary Key
-   public $primaryKey = 'id';
+   public $primaryKey = 'medical_status_id';
    // Timestamps
    public $timeStamps = true;
 

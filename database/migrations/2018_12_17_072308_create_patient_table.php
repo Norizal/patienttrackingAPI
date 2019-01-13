@@ -14,15 +14,17 @@ class CreatePatientTable extends Migration
     public function up()
     {
         Schema::create('patient', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('patient_id');
             $table->integer('hukm_id')->unsigned();
             $table->integer('beacon_id')->unsigned();
             $table->integer('medical_status_id')->unsigned();
             $table->integer('location_id')->unsigned();
-            $table->integer('kin_id')->unsigned();
+            $table->integer('kin_id')->unsigned()->nullable();
             $table->string('barcode')->unique();
-            $table->integer('user_id')->unsigned();
+            $table->integer('ppukm_id')->unsigned();
             $table->timestamps();
+
+         
 
             // $table->foreign('hukm_id')->references('id')->on('patient_hukm');
             // $table->foreign('beacon_id')->references('id')->on('beacon');

@@ -9,7 +9,7 @@ class Location extends Model
      //Table name
    protected $table = 'location';
    //Primary Key
-   public $primaryKey = 'id';
+   public $primaryKey = 'location_id';
 
 
    // Timestamps

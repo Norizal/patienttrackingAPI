@@ -17,37 +17,68 @@ class BeaconController extends Controller
     public function createBeacon(Request $request) 
     { 
         $validator = Validator::make($request->all(), [ 
-            $name = $request->input('name'),
-            $uuid = $request->input('uuid'),
-            $major = $request->input('major'),
-            $minor = $request->input('minor')
-
+            'name'=>'required' ,
+            'uuid'=>'required', 
+            'major'=>'required',
+            'minor'=>'required', 
+            
         ]);
 
         if ($validator->fails()) { 
-            return response()->json(['error'=> FALSE,'error'=>$validator->errors()], 401);            
+            return response()->json(['error'=> TRUE,'error_message'=>$validator->errors()], 401);            
         }else {
 
+            $name = $request->input('name');
+            $uuid = $request->input('uuid');
+            $major = $request->input('major');
+            $minor = $request->input('minor');
+
+            $dataUUID = Beacon::where('beacon_uuid',  $uuid)->count();
+
+            if($dataUUID >0){
+                return response()->json(['error'=> TRUE, 'error_message'=>"Beacon UUID already exist"], 409); 
+            }else{
+                $dataName = Beacon::where('beacon_name',  $name)->count();
+                if($dataName > 0){
+                    return response()->json(['error'=> TRUE, 'error_message'=>"Beacon Name already exist"], 409);
+                }else {
+                        $data = new \App\Beacon();
+                        $data->beacon_name = $name;
+                        $data->beacon_uuid = $uuid;
+                        $data->beacon_major = $major;
+                        $data->beacon_minor = $minor;
+                        $data->save();
+                        return response()->json(['error'=>FALSE,'success'=>$dataUser], $this-> successStatus); 
+                   
+                }
+            }
+
+
+            return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
+
     
-            $dataUser = new \App\Beacon();
-            $dataUser->name = $name;
-            $dataUser->uuid = $uuid;
-            $dataUser->major = $major;
-            $dataUser->minor = $minor;
-            $dataUser->save();
-            return response()->json(['success'=>$dataUser], $this-> successStatus); 
+            
           }
         
 
     }
 
-    public function getBeacon($id) 
+    public function getBeaconByID($id) 
     { 
-        $dataUser = Beacon::find($id);
+        $dataBeacon = Beacon::find($id);
 
-        return response()->json(['success'=>$dataUser], $this-> successStatus); 
-
+       
+        return response()->json(['error'=> FALSE,'success'=>$dataBeacon], $this-> successStatus); 
         
+        
+
+    }
+
+    public function getBeacon(){
+
+        $dataBeacons = Beacon::all();
+       
+        return response()->json(['error'=> FALSE,'success'=>$dataBeacons], $this-> successStatus); 
 
     }
 
