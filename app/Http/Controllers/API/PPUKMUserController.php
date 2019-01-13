@@ -20,8 +20,7 @@ public $successStatus = 200;
      * @return \Illuminate\Http\Response 
      */ 
     public function login(Request $request){
-
-        $validator = Validator::make($request->all(), [ 
+ $validator = Validator::make($request->all(), [ 
             'email'=>'required' , 
             'password'=>'required',
          ]);
@@ -54,7 +53,7 @@ public $successStatus = 200;
                         return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"]);
                     }
 
-                    return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ]);
+                    return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
 
 
 
