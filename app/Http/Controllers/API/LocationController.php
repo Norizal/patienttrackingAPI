@@ -31,12 +31,12 @@ class LocationController extends Controller
                 return response()->json(['error'=> TRUE, 'error_message'=>"Location Name already exist"]);
             }else {
 
-    
             $data= new \App\Location();
             $data->location_name = $name;
             $data->save();
-            return response()->json(['error'=> FALSE,'success'=>$dataUser], $this-> successStatus); 
+            return response()->json(['error'=> FALSE,'success'=>$data], $this-> successStatus); 
           }
+          
         }
         
 
