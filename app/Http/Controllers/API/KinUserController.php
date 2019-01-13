@@ -124,13 +124,13 @@ public $successStatus = 200;
                                  $data->user_id = $id;
  
                                      if($data->save()){
-                                         $success['token'] =  $dataUser->createToken('MyApp')-> accessToken; 
+                                         $token['token'] =  $dataUser->createToken('MyApp')-> accessToken; 
                                          $success['name'] =  $dataUser->name;
                                          $success['email'] =  $dataUser->email;
                                          $success['icnumber'] =  $data->kin_icnumber;
                                          $success['phonenumber'] =  $data->kin_phonenumber;
  
-                                         return response()->json(['error'=> FALSE,'success'=>$success], $this-> successStatus); 
+                                         return response()->json(['error'=> FALSE,'token'=>$token,'success'=>$success], $this-> successStatus); 
                                      }
                                      else{
                                      return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
