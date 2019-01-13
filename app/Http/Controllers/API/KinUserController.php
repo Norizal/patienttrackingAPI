@@ -53,7 +53,7 @@ public $successStatus = 200;
                                 $success['email'] =  $user->email;
                                 $success['icnumber'] =  $data->kin_icnumber;
                                 $success['phonenumber'] =  $data->kin_phonenumber;
-                                return response()->json(['error'=> FALSE, 'success' => $success], $this-> successStatus); 
+                                return response()->json(['error'=> FALSE, 'token'=>$token,'success' => $success], $this-> successStatus); 
                                
                             }else{
                                 return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"]);
