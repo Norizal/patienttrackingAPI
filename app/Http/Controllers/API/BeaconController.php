@@ -48,7 +48,7 @@ class BeaconController extends Controller
                         $data->beacon_major = $major;
                         $data->beacon_minor = $minor;
                         $data->save();
-                        return response()->json(['error'=>FALSE,'success'=>$dataUser], $this-> successStatus); 
+                        return response()->json(['error'=>FALSE,'success'=>$data], $this-> successStatus); 
                    
                 }
             }
