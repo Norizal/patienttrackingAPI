@@ -46,7 +46,7 @@ public $successStatus = 200;
                         $success['email'] =  $user->email;
                         $success['staffid'] =  $data->ppukm_staffid;
                         $success['phonenumber'] =  $data->ppukm_phonenumber;
-                        return response()->json(['error'=> FALSE, 'success' => $success], $this-> successStatus); 
+                        return response()->json(['error'=> FALSE, 'message'=>"Login success",'success' => $success], $this-> successStatus); 
                                    
                     
                     }else{
