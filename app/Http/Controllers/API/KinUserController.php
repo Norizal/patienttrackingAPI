@@ -48,7 +48,7 @@ public $successStatus = 200;
 
                         }else{
                             if(Hash::check($password, $passworddata)){
-                                $success['token'] =  $user->createToken('MyApp')-> accessToken;
+                                $token =  $user->createToken('MyApp')-> accessToken;
                                 $success['name'] =  $user->name;
                                 $success['email'] =  $user->email;
                                 $success['icnumber'] =  $data->kin_icnumber;
@@ -124,7 +124,7 @@ public $successStatus = 200;
                                  $data->user_id = $id;
  
                                      if($data->save()){
-                                         $token['token'] =  $dataUser->createToken('MyApp')-> accessToken; 
+                                         $token =  $dataUser->createToken('MyApp')-> accessToken; 
                                          $success['name'] =  $dataUser->name;
                                          $success['email'] =  $dataUser->email;
                                          $success['icnumber'] =  $data->kin_icnumber;
