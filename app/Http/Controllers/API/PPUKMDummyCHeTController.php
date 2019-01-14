@@ -82,7 +82,7 @@ class PPUKMDummyCHeTController extends Controller
         $dataPatient = PatientHUKM::find($patientID);
 
         
-            return response()->json(['error'=> FALSE,'success'=>$dataPatient], $this-> successStatus); 
+            return response()->json(['error'=> FALSE, $dataPatient], $this-> successStatus); 
         
     }
 
