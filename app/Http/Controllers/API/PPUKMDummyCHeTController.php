@@ -79,18 +79,14 @@ class PPUKMDummyCHeTController extends Controller
     public function getPatientHUKMByID($id) 
     {
         $patientID = PatientHUKM::where('hukm_icnumber',  $id)->first();
-        $dataPatient = PatientHUKM::find($patientID);
-        $data = $dataPatient->hukm_id;
-        $data = $dataPatient->hukm_icnumber;
-        $data = $dataPatient->hukm_name;
-        $data = $dataPatient->hukm_mrn;
-        $data = $dataPatient->hukm_gender;
-        $data = $dataPatient->hukm_age;
-        $data = $dataPatient->hukm_race;
-        $data = $dataPatient->hukm_phonenumber;
-        $data = $dataPatient->hukm_created_at;
-        $data = $dataPatient->hukm_updated_at;
+        $patientHUKM = $patientID->hukm_id;
 
+        $data = DB::table('patient_hukm')
+        ->select('patient_hukm.hukm_name as name','patient_hukm.hukm_icnumber as icnumber','patient_hukm.hukm_mrn as mrn','patient_hukm.hukm_gender as gender',
+        'patient_hukm.hukm_age as age', 'patient_hukm.hukm_race as race', 'patient_hukm.hukm_phonenumber as phonenumber')
+        ->where('patient_hukm.hukm_id', $patientHUKM)
+        ->get();
+    
         
         return response()->json(['error'=> FALSE,'success'=>$data], $this-> successStatus); 
         
