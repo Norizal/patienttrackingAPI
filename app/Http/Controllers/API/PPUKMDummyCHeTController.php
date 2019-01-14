@@ -77,8 +77,9 @@ class PPUKMDummyCHeTController extends Controller
     }
 
     public function getPatientHUKMByID($id) 
-    { 
-        $dataPatient = PatientHUKM::find($id);
+    {
+        $patientID = PatientHUKM::where('hukm_icnumber',  $id)->first();
+        $dataPatient = PatientHUKM::find($patientID);
 
         
             return response()->json(['error'=> FALSE,'success'=>$dataPatient], $this-> successStatus); 
