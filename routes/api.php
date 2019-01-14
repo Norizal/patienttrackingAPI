@@ -49,7 +49,7 @@ Route::group(['middleware' => 'auth:api'], function(){
 
 Route::post('details', 'API\PPUKMUserController@details');
 Route::post('createPatient', 'API\PPUKMPatientController@createPatient');
-Route::post('getPatientPPUKM', 'API\PPUKMPatientController@getPatient');
+Route::get('getPatientPPUKM', 'API\PPUKMPatientController@getPatient');
 
 
 //Kin Part /////
