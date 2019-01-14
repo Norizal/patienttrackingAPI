@@ -5,6 +5,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; 
 use App\User;
 use App\Patient;
+use App\Location;
+use App\MedicalStatus;
+use App\PatientHUKM;
+use App\Beacon;
 use App\PPUKM;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
@@ -73,18 +77,25 @@ class PPUKMPatientController extends Controller
         $data = DB::table('patient')
         ->join('patient_hukm', 'patient_hukm.hukm_id', '=', 'patient.hukm_id')
         ->join('location', 'location.location_id', '=', 'patient.location_id')
+        ->join('medical_status', 'medical_status.medical_status_id', '=', 'patient.medical_status_id')
+        ->join('beacon', 'beacon.beacon_id', '=', 'patient.beacon_id')
         ->leftJoin('kin_chat', 'kin_chat.patient_id', '=', 'patient.patient_id')
+        ->leftJoin('ppukm_chat', 'ppukm_chat.patient_id', '=', 'patient.patient_id')
         ->select('patient_hukm.hukm_name as name','patient_hukm.hukm_icnumber as icnumber','patient_hukm.hukm_mrn as mrn','patient_hukm.hukm_gender as gender',
         'patient_hukm.hukm_age as age', 'patient_hukm.hukm_race as race', 'patient_hukm.hukm_phonenumber as phonenumber', 
-        'location.location_name as location', DB::raw("count(kin_chat.kin_chat_id) as kin_chat"))
+        'location.location_name as location', 'medical_status.medical_status_name as medical_status', 'beacon.beacon_name as beacon_name',
+        DB::raw('IFNULL( kin_chat.kin_chat_status_sent, 0) as kin_chat_status_sent'),
+        DB::raw('IFNULL( kin_chat.kin_chat_status_read, 0) as kin_chat_status_read'),
+        DB::raw('IFNULL( ppukm_chat.ppukm_chat_status_sent, 0) as ppukm_chat_status_sent'),
+        DB::raw('IFNULL( ppukm_chat.ppukm_chat_status_read, 0) as ppukm_chat_status_read'),    
+        DB::raw("count(kin_chat.kin_chat_id) as kin_chat"), 
+        DB::raw("count(ppukm_chat.ppukm_chat_id) as ppukm_chat"))
         ->where('patient.ppukm_id', $userPPUKM)
-        ->groupBy('patient.patient_id')
+        ->groupBy('patient.ppukm_id')
         ->get();
         
         
-        
-        // select('SELECT id, hukm_id, beacon_id, FROM kin WHERE user_id = :id', ['id' => $user]);
-        return response()->json(['success' => $data], $this-> successStatus); 
+        return response()->json(['error'=> FALSE,'success' => $data], $this-> successStatus); 
 
 
     }
