@@ -80,9 +80,19 @@ class PPUKMDummyCHeTController extends Controller
     {
         $patientID = PatientHUKM::where('hukm_icnumber',  $id)->first();
         $dataPatient = PatientHUKM::find($patientID);
+        $data = $dataPatient->hukm_id;
+        $data = $dataPatient->hukm_icnumber;
+        $data = $dataPatient->hukm_name;
+        $data = $dataPatient->hukm_mrn;
+        $data = $dataPatient->hukm_gender;
+        $data = $dataPatient->hukm_age;
+        $data = $dataPatient->hukm_race;
+        $data = $dataPatient->hukm_phonenumber;
+        $data = $dataPatient->hukm_created_at;
+        $data = $dataPatient->hukm_updated_at;
 
         
-            return response()->json(['error'=> FALSE, $dataPatient], $this-> successStatus); 
+        return response()->json(['error'=> FALSE,'success'=>$data], $this-> successStatus); 
         
     }
 
