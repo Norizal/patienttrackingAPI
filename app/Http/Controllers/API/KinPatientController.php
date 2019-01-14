@@ -20,7 +20,7 @@ class KinPatientController extends Controller
     public $successStatus = 200;
  
 
-    public function getPatientKin(){
+    public function getPatient(){
 
         $user = Auth::user()->id;
         $data = Kin::where('user_id',  $user)->first();
