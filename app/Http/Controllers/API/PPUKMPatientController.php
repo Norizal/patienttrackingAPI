@@ -71,10 +71,12 @@ class PPUKMPatientController extends Controller
 
       
         $data = DB::table('patient')
-        ->select('patient_hukm.hukm_name','patient_hukm.hukm_icnumber','patient_hukm.hukm_mrn','patient_hukm.hukm_gender','patient_hukm.hukm_age', 'patient_hukm.hukm_race', 'patient_hukm.hukm_phonenumber', 'location.location_name', DB::raw("count(kin_chat.kin_chat_id) as kin_chat"))
         ->join('patient_hukm', 'patient_hukm.hukm_id', '=', 'patient.hukm_id')
         ->join('location', 'location.location_id', '=', 'patient.location_id')
         ->leftJoin('kin_chat', 'kin_chat.patient_id', '=', 'patient.patient_id')
+        ->select('patient_hukm.hukm_name as name','patient_hukm.hukm_icnumber as icnumber','patient_hukm.hukm_mrn as mrn','patient_hukm.hukm_gender as gender',
+        'patient_hukm.hukm_age as age', 'patient_hukm.hukm_race as race', 'patient_hukm.hukm_phonenumber as phonenumber', 
+        'location.location_name as location', DB::raw("count(kin_chat.kin_chat_id) as kin_chat"))
         ->where('patient.ppukm_id', $userPPUKM)
         ->groupBy('patient.patient_id')
         ->get();
