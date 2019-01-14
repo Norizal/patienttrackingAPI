@@ -79,12 +79,11 @@ class PPUKMDummyCHeTController extends Controller
     public function getPatientHUKMByID($id) 
     {
         $patientID = PatientHUKM::where('hukm_icnumber',  $id)->first();
-        $patientHUKM = $patientID->hukm_id;
 
         $data = DB::table('patient_hukm')
         ->select('patient_hukm.hukm_id as hukm_id','patient_hukm.hukm_name as name','patient_hukm.hukm_icnumber as icnumber','patient_hukm.hukm_mrn as mrn','patient_hukm.hukm_gender as gender',
         'patient_hukm.hukm_age as age', 'patient_hukm.hukm_race as race', 'patient_hukm.hukm_phonenumber as phonenumber')
-        ->where('patient_hukm.hukm_id', 'like', '%' . $patientHUKM . '%')
+        ->where('patient_hukm.hukm_id', 'like',  $patientID. '%')
         ->get();
     
         
