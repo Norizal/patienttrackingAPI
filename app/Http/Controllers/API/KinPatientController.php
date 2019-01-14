@@ -35,25 +35,29 @@ class KinPatientController extends Controller
 
         $dataHUKM = PatientHUKM::where('hukm_id',  $userPatient)->first();
 
-        $data = $dataHUKM->hukm_icnumber;
-        $data = $dataHUKM->hukm_name;
-        $data = $dataHUKM->hukm_mrn;
-        $data = $dataHUKM->hukm_gender;
-        $data = $dataHUKM->hukm_age;
-        $data = $dataHUKM->hukm_race;
-        $data = $dataHUKM->hukm_phonenumber;
 
         $dataLocation = Location::where('location_id',  $userLocation)->first();
 
-        $data = $dataLocation->location_name;
 
         $dataBeacon = Beacon::where('beacon_id',  $userBeacon)->first();
 
-        $data = $dataBeacon->beacon_name;
+      
 
         $dataMedicalStatus = MedicalStatus::where('medical_status_id',  $userMedicalStatus)->first();
 
-        $data = $dataMedicalStatus->medical_status_name;
+       
+
+        $success['icnumber'] = $dataHUKM->hukm_icnumber;
+        $success['name'] =  $dataHUKM->hukm_name;
+        $success['mrn'] =  $dataHUKM->hukm_mrn;
+        $success['gender'] =  $dataHUKM->hukm_gender;
+        $success['age'] = $dataHUKM->hukm_age;
+        $success['race'] =  $dataHUKM->hukm_race;
+        $success['phonenumber'] =  $dataHUKM->hukm_phonenumber;
+        $success['location'] =  $dataLocation->location_name;
+        $success['beacon'] = $dataBeacon->beacon_name;
+        $success['medicalstatus'] =  $dataMedicalStatus->medical_status_name;
+       
 
 
 
@@ -68,7 +72,7 @@ class KinPatientController extends Controller
         
         
         // select('SELECT id, hukm_id, beacon_id, FROM kin WHERE user_id = :id', ['id' => $user]);
-        return response()->json(['success' => $data], $this-> successStatus); 
+        return response()->json(['success' => $success], $this-> successStatus); 
 
 
     }
