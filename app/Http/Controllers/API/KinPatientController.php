@@ -28,9 +28,11 @@ class KinPatientController extends Controller
 
       
         $data = DB::table('patient')
-        ->select('patient_hukm.hukm_name','patient_hukm.hukm_icnumber','patient_hukm.hukm_mrn','patient_hukm.hukm_gender','patient_hukm.hukm_age', 'patient_hukm.hukm_race', 'patient_hukm.hukm_phonenumber', 'location.location_name')
+        ->select('patient_hukm.hukm_name','patient_hukm.hukm_icnumber','patient_hukm.hukm_mrn','patient_hukm.hukm_gender','patient_hukm.hukm_age', 'patient_hukm.hukm_race', 'patient_hukm.hukm_phonenumber', 'location.location_name', 'medical_status.medical_status_name', 'beacon.beacon_name')
         ->join('patient_hukm', 'patient_hukm.hukm_id', '=', 'patient.hukm_id')
         ->join('location', 'location.location_id', '=', 'patient.location_id')
+        ->join('medical_status', 'medical_status.medical_status_id', '=', 'patient.medical_status_id')
+        ->join('beacon', 'beacon.beacon_id', '=', 'patient.beacon_id')
         ->where('patient.kin_id', $userKin)
         ->get();
         
