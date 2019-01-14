@@ -54,7 +54,7 @@ Route::post('getPatientPPUKM', 'API\PPUKMPatientController@getPatient');
 
 //Kin Part /////
 Route::post('createRelationship', 'API\KinUserController@createRelationship');
-Route::post('getPatientKin', 'API\KinPatientController@getPatient');
+Route::get('getPatientKin', 'API\KinPatientController@getPatient');
 
 Route::post('kinChat', 'API\KinCommunicationController@createChat');
 Route::post('getkinChat', 'API\KinCommunicationController@getChat');
