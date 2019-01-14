@@ -20,15 +20,17 @@ class KinPatientController extends Controller
     public $successStatus = 200;
  
 
-    public function getPatient(){
+    public function getPatientKin(){
 
         $user = Auth::user()->id;
+        $data = Kin::where('user_id',  $user)->first();
+        $userKin = $data->kin_id;
 
       
         $data = DB::table('patient')
-        ->select('patient_hukm.name','patient_hukm.icnumber','patient_hukm.mrn','patient_hukm.gender','patient_hukm.age', 'patient_hukm.race', 'patient_hukm.phonenumber', 'location.name')
-        ->join('patient_hukm', 'patient_hukm.id', '=', 'patient.hukm_id')
-        ->join('location', 'location.id', '=', 'patient.location_id')
+        ->select('patient_hukm.hukm_name','patient_hukm.hukm_icnumber','patient_hukm.hukm_mrn','patient_hukm.hukm_gender','patient_hukm.hukm_age', 'patient_hukm.hukm_race', 'patient_hukm.hukm_phonenumber', 'location.location_name')
+        ->join('patient_hukm', 'patient_hukm.hukm_id', '=', 'patient.hukm_id')
+        ->join('location', 'location.location_id', '=', 'patient.location_id')
         ->where('patient.kin_id', $user)
         ->get();
         
