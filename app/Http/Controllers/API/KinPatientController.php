@@ -31,7 +31,7 @@ class KinPatientController extends Controller
         ->select('patient_hukm.hukm_name','patient_hukm.hukm_icnumber','patient_hukm.hukm_mrn','patient_hukm.hukm_gender','patient_hukm.hukm_age', 'patient_hukm.hukm_race', 'patient_hukm.hukm_phonenumber', 'location.location_name')
         ->join('patient_hukm', 'patient_hukm.hukm_id', '=', 'patient.hukm_id')
         ->join('location', 'location.location_id', '=', 'patient.location_id')
-        ->where('patient.kin_id', $user)
+        ->where('patient.kin_id', $userKin)
         ->get();
         
         
