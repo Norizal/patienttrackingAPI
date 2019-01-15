@@ -26,7 +26,7 @@ Route::post('registerPPUKM', 'API\PPUKMUserController@register');
 
 
 Route::post('createPatientHUKM', 'API\PPUKMDummyCHeTController@createPatientHUKM');
-Route::get('getPatientHUKM/{id}', 'API\PPUKMDummyCHeTController@getPatientHUKMByID');
+Route::get('getPatientHUKMByID/{hukm_icnumber}', 'API\PPUKMDummyCHeTController@getPatientHUKMByID');
 Route::get('getPatientHUKM', 'API\PPUKMDummyCHeTController@getPatientHUKM');
 
 Route::post('createLocation', 'API\LocationController@createLocation');

@@ -76,18 +76,15 @@ class PPUKMDummyCHeTController extends Controller
 
     }
 
-    public function getPatientHUKMByID($id) 
+    public function getPatientHUKMByID($ic) 
     {
-        $patientID = PatientHUKM::where('hukm_icnumber',  $id)->first();
+        $ICNumber = PatientHUKM::where('hukm_icnumber','like', $ic.'%')->get();
+        
 
-        $data = DB::table('patient_hukm')
-        ->select('patient_hukm.hukm_id as hukm_id','patient_hukm.hukm_name as name','patient_hukm.hukm_icnumber as icnumber','patient_hukm.hukm_mrn as mrn','patient_hukm.hukm_gender as gender',
-        'patient_hukm.hukm_age as age', 'patient_hukm.hukm_race as race', 'patient_hukm.hukm_phonenumber as phonenumber')
-        ->where('patient_hukm.hukm_id', 'like',  $patientID. '%')
-        ->get();
+       // $data = DB::select("SELECT * FROM `patient_hukm` where `hukm_icnumber` like '$ICNumber%%'");
     
         
-        return response()->json(['success'=>$data], $this-> successStatus); 
+        return response()->json(['success'=>$ICNumber], $this-> successStatus); 
         
     }
 
