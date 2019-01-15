@@ -87,7 +87,7 @@ class PPUKMDummyCHeTController extends Controller
         ->get();
     
         
-        return response()->json(['error'=> FALSE,'success'=>$data], $this-> successStatus); 
+        return response()->json(['success'=>$data], $this-> successStatus); 
         
     }
 
