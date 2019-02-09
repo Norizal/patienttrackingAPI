@@ -63,9 +63,9 @@ class BeaconController extends Controller
 
     }
 
-    public function getBeaconByID($id) 
+    public function getBeaconByID($beacon_name) 
     { 
-        $dataBeacon = Beacon::find($id);
+        $dataBeacon = Beacon::where('beacon_name','like', $beacon_name.'%')->get();
 
        
         return response()->json(['error'=> FALSE,'success'=>$dataBeacon], $this-> successStatus); 

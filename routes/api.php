@@ -35,11 +35,11 @@ Route::get('getLocation', 'API\LocationController@getLocation');
 
 
 Route::post('createBeacon', 'API\BeaconController@createBeacon');
-Route::get('getBeacon/{id}', 'API\BeaconController@getBeaconByID');
+Route::get('getBeacon/{$beacon_name}', 'API\BeaconController@getBeaconByID');
 Route::get('getBeacon', 'API\BeaconController@getBeacon');
 
 Route::post('createMedicalStatus', 'API\MedicalStatusController@createMedicalStatus');
-Route::get('getMedicalStatus/{id}', 'API\MedicalStatusController@getMedicalStatusByID');
+Route::get('getMedicalStatus/{$medical_status_name}', 'API\MedicalStatusController@getMedicalStatusByID');
 Route::get('getMedicalStatus', 'API\MedicalStatusController@getMedicalStatus');
 
 

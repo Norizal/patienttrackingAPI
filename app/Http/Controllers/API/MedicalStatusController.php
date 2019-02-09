@@ -43,9 +43,10 @@ class MedicalStatusController extends Controller
 
     }
 
-    public function getMedicalStatusByID($id) 
-    { 
-        $dataStatus = MedicalStatus::find($id);
+    public function getMedicalStatusByID($medical_status_name) 
+    {
+       
+        $dataStatus = MedicalStatus::where('medical_status_name','like', $medical_status_name.'%')->get();
 
         return response()->json(['success'=>$dataStatus], $this-> successStatus); 
 
