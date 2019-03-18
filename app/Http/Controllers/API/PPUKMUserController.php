@@ -76,8 +76,8 @@ public $successStatus = 200;
            'staffid'=>'required', 
            'email'=>'required|email|max:255|unique:users',
            'phonenumber'=>'required', 
-           'password'=>'required|min:6', 
-           'c_password' => 'required|same:password',  
+           'password'=>'required|min:5', 
+           'confirm_password' => 'required|same:password',  
         ]);
 
 
