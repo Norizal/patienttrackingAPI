@@ -11,6 +11,7 @@ use Validator;
 use Illuminate\Support\Facades\DB;
 use Lcobucci\JWT\Parser;
 use Illuminate\Support\Facades\Hash;
+use Mail;
 
 
 class KinUserController extends Controller 
@@ -31,13 +32,14 @@ public $successStatus = 200;
          if ($validator->fails()) {
             return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
         }else {
-            if(Auth::attempt(['email' => request('email'), 'password' => request('password'), 'typeuser' => 3])){ 
+            if(Auth::attempt(['email' => request('email'), 'password' => request('password'), 'typeuser' => 3, 'is_active' => 1])){ 
                 $user = Auth::user();
                 $id =  $user->id;
                 $data = Kin::where('user_id',  $id)->first(); 
 
                 $emaildata = $user->email;
                 $passworddata = $user->password;
+                $emailstatus = $user->is_active;
               
 
                 $email= $request->input('email');
@@ -46,12 +48,14 @@ public $successStatus = 200;
                         if($emaildata != $email){
                             return response()->json(['error'=> TRUE, 'error_message'=>"Email not found"]); 
 
-                        }else{
+                        }else if($emailstatus == 0){
+                            return response()->json(['error'=> TRUE, 'error_message'=>"Email not active. Please check your email for the activation code to verify your email.If you don't get email for the activation code"]); 
+                        }
+                        else{
                             if(Hash::check($password, $passworddata)){
                                 $token =  $user->createToken('MyApp')-> accessToken;
                                 $success['name'] =  $user->name;
                                 $success['email'] =  $user->email;
-                                $success['icnumber'] =  $data->kin_icnumber;
                                 $success['phonenumber'] =  $data->kin_phonenumber;
                                 return response()->json(['error'=> FALSE, 'token'=>$token,'success' => $success], $this-> successStatus); 
                                
@@ -68,7 +72,8 @@ public $successStatus = 200;
              return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
         }
     }
-/** 
+
+    /** 
      * Register api 
      * 
      * @return \Illuminate\Http\Response 
@@ -76,49 +81,47 @@ public $successStatus = 200;
     public function register(Request $request) 
     { 
         $validator = Validator::make($request->all(), [ 
-            'name'=>'required' ,
-            'icnumber'=>'required', 
+            'name'=>'required' , 
             'email'=>'required|email|max:255|unique:users',
             'phonenumber'=>'required', 
             'password'=>'required|min:6', 
             'c_password' => 'required|same:password',  
          ]);
- 
- 
- 
- 
+
          if ($validator->fails()) {
              return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
          }else {
                      $name = $request->input('name');
-                     $icnumber= $request->input('icnumber');
                      $email= $request->input('email');
                      $phonenumber = $request->input('phonenumber');
                      $password = $request->input('password');
- 
-                     $dataICID = Kin::where('kin_icnumber',  $icnumber)->count();
                      $dataEmail = User::where('email',  $email)->count();
  
-                     if($dataICID > 0){
-                         return response()->json(['error'=> TRUE, 'error_message'=>"I/C Number already exist"]); 
-                     }elseif($dataEmail > 0){
+                     if($dataEmail > 0){
                          return response()->json(['error'=> TRUE, 'error_message'=>"Email already exist"]);
                      }else{
+                    $rand = $this->generateRandomString(4);
  
                      $dataUser = new \App\User();
                      $dataUser->name = $name;
                      $dataUser->email = $email;
                      $dataUser->password = bcrypt($password);
                      $dataUser->typeuser = 3;
+                     $dataUser->email_verified_code = $rand;
+                     $dataUser->is_active = 0;
  
                           if($dataUser->save()){
-         
-                                  $id =  $dataUser->id;
-                 
-                                  $data = new \App\Kin;
+                            Mail::send('emails.contact-message', [
+                                'msg' => $rand
+                            ], function ($mail) use ($request){
+                                $mail->from('patienttracking23@gmail.com');
+                    
+                                $mail->to($request->email, $request->name)->subject('Your Verification Code');
+                            });
+                                 $id =  $dataUser->id;
+                                 $data = new \App\Kin;
      
                                  $data->kin_name = $name;
-                                 $data->kin_icnumber = $icnumber;
                                  $data->kin_email = $email;
                                  $data->kin_phonenumber = $phonenumber;
                                  $data->user_id = $id;
@@ -127,7 +130,6 @@ public $successStatus = 200;
                                          $token =  $dataUser->createToken('MyApp')-> accessToken; 
                                          $success['name'] =  $dataUser->name;
                                          $success['email'] =  $dataUser->email;
-                                         $success['icnumber'] =  $data->kin_icnumber;
                                          $success['phonenumber'] =  $data->kin_phonenumber;
  
                                          return response()->json(['error'=> FALSE,'token'=>$token,'success'=>$success], $this-> successStatus); 
@@ -145,14 +147,121 @@ public $successStatus = 200;
  
          }
     }
-/** 
-     * details api 
+
+     /** 
+     * Generate random string
      * 
      * @return \Illuminate\Http\Response 
      */ 
-    
-    
 
+    public function generateRandomString($length) {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+     }
+
+    /** 
+     * Email Activation 
+     * 
+     * @return \Illuminate\Http\Response 
+     */ 
+
+    public function activation(Request $request){
+
+        $validator = Validator::make($request->all(), [ 
+            'email_verified_code'=>'required' 
+         ]);
+
+         
+         if ($validator->fails()) {
+            return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
+        }else {
+
+            $code = $request->input('email_verified_code');
+
+            $user = User::where('email_verified_code',  $code)->count();
+          
+            if($user > 0)
+            {
+                $usID = User::where('email_verified_code',  $code)->first();
+                $ID = $usID->id;
+
+                DB::table('users')
+                ->where('id', $ID)
+                ->update(['is_active' => 1]);
+
+              return response()->json(['error'=> FALSE, 'success' => "Email has been verify. Thank You"], $this-> successStatus);     
+            }
+  
+            else{
+              
+                  return response()->json(['error'=> TRUE, 'message' => 'Email verification fail!, Please register' ],404);
+                
+            }
+            return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
+          }
+    }
+
+     /** 
+     * Request Code 
+     * 
+     * @return \Illuminate\Http\Response 
+     */ 
+    public function requestCode(Request $request){
+
+        $validator = Validator::make($request->all(), [ 
+            'email'=>'required' 
+         ]);
+
+         
+         if ($validator->fails()) {
+            return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
+        }else {
+
+            $email = $request->input('email');
+
+            $userEmail = User::where('email',  $email)->count();
+          
+            if($userEmail > 0)
+            {
+                $usID = User::where('email',  $email)->first();
+                $ID = $usID->id;
+
+                $rand = $this->generateRandomString(4);
+
+                DB::table('users')
+                ->where('id', $ID)
+                ->update(['email_verified_code' => $rand]);
+
+                Mail::send('emails.contact-message', [
+                    'msg' => $rand
+                ], function ($mail) use ($request){
+                    $mail->from('patienttracking23@gmail.com');
+        
+                    $mail->to($request->email, $request->name)->subject('Your Verification Code');
+                });
+
+              return response()->json(['error'=> FALSE, 'success' => "Email has been verify. Thank You"], $this-> successStatus);     
+            }
+  
+            else{
+              
+                  return response()->json(['error'=> TRUE, 'message' => 'Email not found!, Please register' ],404);
+                
+            }
+            return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
+          }
+    }
+
+     /** 
+     * Create Relationship
+     * 
+     * @return \Illuminate\Http\Response 
+     */ 
     public function createRelationship(Request $request){
 
         $validator = Validator::make($request->all(), [
@@ -194,7 +303,7 @@ public $successStatus = 200;
           }
           return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
         }
-    }
+      }
         
 
 }

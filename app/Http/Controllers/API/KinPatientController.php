@@ -27,20 +27,26 @@ class KinPatientController extends Controller
         $userKin = $data->kin_id;
 
       
-        $data = DB::table('patient')
-        ->select('patient_hukm.hukm_name','patient_hukm.hukm_icnumber','patient_hukm.hukm_mrn','patient_hukm.hukm_gender','patient_hukm.hukm_age', 'patient_hukm.hukm_race', 'patient_hukm.hukm_phonenumber', 'location.location_name', 'medical_status.medical_status_name', 'beacon.beacon_name')
-        ->join('patient_hukm', 'patient_hukm.hukm_id', '=', 'patient.hukm_id')
-        ->join('location', 'location.location_id', '=', 'patient.location_id')
-        ->join('medical_status', 'medical_status.medical_status_id', '=', 'patient.medical_status_id')
-        ->join('beacon', 'beacon.beacon_id', '=', 'patient.beacon_id')
-        ->where('patient.kin_id', $userKin)
-        ->get();
+        $patientInfo = DB::select('SELECT patient.patient_id as id, patient_hukm.hukm_name as name,patient_hukm.hukm_icnumber as icnumber,patient_hukm.hukm_mrn as mrn,patient_hukm.hukm_gender as gender, patient_hukm.hukm_age as age, patient_hukm.hukm_race as race, patient_hukm.hukm_phonenumber as phonenumber,medical_status.medical_status_name as medical_status, device.name as beacon_name, device.mac as beacon_mac, gateway.mac as gateway_mac, gateway.name as gateway_name FROM patient INNER JOIN  patient_hukm ON patient.hukm_id = patient_hukm.hukm_id INNER JOIN medical_status ON patient.medical_status_id = medical_status.medical_status_id INNER JOIN device ON patient.device_mac = device.mac INNER JOIN gateway ON patient.gateway_mac = gateway.mac   WHERE patient.kin_id = :kin_id ORDER BY patient_hukm.hukm_mrn ASC', ['kin_id' => $userKin]);
         
         
         
         // select('SELECT id, hukm_id, beacon_id, FROM kin WHERE user_id = :id', ['id' => $user]);
-        return response()->json(['success' => $data], $this-> successStatus); 
+        return response()->json(['success' => $patientInfo], $this-> successStatus); 
 
+
+    }
+
+    public function getLocationHistoryByID($patID) 
+    { 
+        $dataPatientLocation = Patient::where('patient_id', $patID)->first();
+        $DMac= $dataPatientLocation->device_mac;
+
+        $dataLocation = DB::select('SELECT patient.patient_id as id, gateway.name as location, status.updated_at as time FROM patient INNER JOIN device ON patient.device_mac = device.mac LEFT JOIN status ON device.mac = status.mac LEFT JOIN gateway ON gateway.mac = status.gateway_mac WHERE patient.device_mac = :device_mac ORDER BY status.updated_at DESC', ['device_mac' => $DMac]);
+        
+        return response()->json(['error'=> FALSE,'success' => $dataLocation], $this-> successStatus); 
+        
+        
 
     }
 }

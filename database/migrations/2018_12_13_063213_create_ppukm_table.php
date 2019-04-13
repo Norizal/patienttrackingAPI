@@ -16,7 +16,6 @@ class CreatePpukmTable extends Migration
         Schema::create('ppukm', function (Blueprint $table) {
             $table->increments('ppukm_id');
             $table->string('ppukm_name');
-            $table->string('ppukm_staffid')->unique();
             $table->string('ppukm_email')->unique();
             $table->string('ppukm_phonenumber');
             $table->integer('user_id')->unsigned();

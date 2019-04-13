@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLocationTable extends Migration
+class AddGatewayPrimaryKeyTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateLocationTable extends Migration
      */
     public function up()
     {
-        Schema::create('location', function (Blueprint $table) {
-            $table->increments('location_id');
-            $table->string('location_name')->unique();
-            $table->timestamps();
-
-            
+        Schema::table('gateway', function (Blueprint $table) {
+            $table->engine = 'MyISAM';
+            $table->primary(['uuid', 'mac']);
         });
     }
 
@@ -29,6 +26,8 @@ class CreateLocationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('location');
+        Schema::table('gateway', function (Blueprint $table) {
+            //
+        });
     }
 }
