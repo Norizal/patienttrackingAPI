@@ -42,7 +42,7 @@ class KinPatientController extends Controller
         $dataPatientLocation = Patient::where('patient_id', $patID)->first();
         $DMac= $dataPatientLocation->device_mac;
 
-        $dataLocation = DB::select('SELECT patient.patient_id as id, gateway.name as location, status.updated_at as time FROM patient INNER JOIN device ON patient.device_mac = device.mac LEFT JOIN status ON device.mac = status.mac LEFT JOIN gateway ON gateway.mac = status.gateway_mac WHERE patient.device_mac = :device_mac ORDER BY status.updated_at DESC', ['device_mac' => $DMac]);
+        $dataLocation = DB::select('SELECT patient.patient_id as id, gateway.name as location, DATE_FORMAT(status.updated_at,"%r %e/%c/%Y") as time FROM patient INNER JOIN device ON patient.device_mac = device.mac LEFT JOIN status ON device.mac = status.mac LEFT JOIN gateway ON gateway.mac = status.gateway_mac WHERE patient.device_mac = :device_mac ORDER BY status.updated_at DESC', ['device_mac' => $DMac]);
         
         return response()->json(['error'=> FALSE,'success' => $dataLocation], $this-> successStatus); 
         
