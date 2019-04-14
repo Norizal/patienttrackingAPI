@@ -71,7 +71,7 @@ public $successStatus = 200;
                         $success['name'] =  $user->name;
                         $success['email'] =  $user->email;
                         $success['phonenumber'] =  $data->ppukm_phonenumber;
-                        return response()->json(['error'=> FALSE, 'token'=>$token,'success' => $success], $this-> successStatus); 
+                        return response()->json(['error'=> FALSE, 'token'=>$token, 'message'=>"Login success", 'success' => $success], $this-> successStatus); 
                     } else{
                         return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong!"]);
 
