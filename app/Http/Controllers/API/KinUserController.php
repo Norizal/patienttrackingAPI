@@ -102,22 +102,57 @@ public $successStatus = 200;
             'email'=>'required|email|max:255|unique:users',
             'phonenumber'=>'required', 
             'password'=>'required|min:6', 
-            'c_password' => 'required|same:password',  
+            'c_password' => 'required',  
          ]);
 
+         $name = $request->input('name');
+         $email= $request->input('email');
+         $phonenumber = $request->input('phonenumber');
+         $password = $request->input('password');
+         $cpassword = $request->input('c_password');
+         $dataEmail = User::where('email',  $email)->count();
+
          if ($validator->fails()) {
-             return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
+            //  return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);    
+            if (($name == "") && ($email == "") && ($phonenumber == "") && ($password == "")){
+                return response()->json(['error'=> TRUE, 'error_message'=>"Please enter all the information"]); 
+            }else{
+                if ($name == ""){
+                    return response()->json(['error'=> TRUE, 'error_message'=>"Please enter the name"]); 
+                }
+                else{
+                    if ($email == ""){
+                        return response()->json(['error'=> TRUE, 'error_message'=>"Please enter the email"]); 
+                    }else{
+                        if ($phonenumber == ""){
+                            return response()->json(['error'=> TRUE, 'error_message'=>"Please enter the phonenumber"]); 
+                        }else{
+                            if ($password == ""){
+                                return response()->json(['error'=> TRUE, 'error_message'=>"Please enter the password"]); 
+
+                            }else{
+                                if ($cpassword == ""){
+                                return response()->json(['error'=> TRUE, 'error_message'=>"Please enter the confirm password"]); 
+                                }else {
+                                   
+                                        if($dataEmail > 0){
+                                            return response()->json(['error'=> TRUE, 'error_message'=>"Email already exist"]);
+                                        
+                                    }
+                                    
+                                }
+
+                            }
+                          
+                        }
+
+                    }
+                }
+            }                    
          }else {
-                     $name = $request->input('name');
-                     $email= $request->input('email');
-                     $phonenumber = $request->input('phonenumber');
-                     $password = $request->input('password');
-                     $dataEmail = User::where('email',  $email)->count();
- 
-                     if($dataEmail > 0){
-                         return response()->json(['error'=> TRUE, 'error_message'=>"Email already exist"]);
-                     }else{
-                    $rand = $this->generateRandomString(4);
+                     
+                   
+            $rand = $this->generateRandomString(4);
  
                      $dataUser = new \App\User();
                      $dataUser->name = $name;
@@ -162,7 +197,7 @@ public $successStatus = 200;
              } 
              return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
  
-         }
+         
     }
 
      /** 
