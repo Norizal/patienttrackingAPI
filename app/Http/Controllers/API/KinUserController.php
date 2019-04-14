@@ -193,12 +193,17 @@ public $successStatus = 200;
             'email_verified_code'=>'required' 
          ]);
 
+         $code = $request->input('email_verified_code');
+
          
          if ($validator->fails()) {
-            return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
+            //return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);    
+            if ($code == ""){
+                return response()->json(['error'=> TRUE, 'error_message'=>"Please enter the verification code"]); 
+            }        
         }else {
 
-            $code = $request->input('email_verified_code');
+           
 
             $user = User::where('email_verified_code',  $code)->count();
           
@@ -216,7 +221,7 @@ public $successStatus = 200;
   
             else{
               
-                  return response()->json(['error'=> TRUE, 'message' => 'Email verification fail!, Please register' ],404);
+                  return response()->json(['error'=> TRUE, 'error_message' => 'Email verification fail!' ],404);
                 
             }
             return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
@@ -234,13 +239,17 @@ public $successStatus = 200;
             'email'=>'required' 
          ]);
 
+         $email = $request->input('email');
+
          
          if ($validator->fails()) {
-            return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
+           // return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401); 
+           if ($email == ""){
+            return response()->json(['error'=> TRUE, 'error_message'=>"Please enter the email"]); 
+        }           
         }else {
 
-            $email = $request->input('email');
-
+           
             $userEmail = User::where('email',  $email)->count();
           
             if($userEmail > 0)
@@ -267,7 +276,7 @@ public $successStatus = 200;
   
             else{
               
-                  return response()->json(['error'=> TRUE, 'message' => 'Email not found!, Please register' ],404);
+                  return response()->json(['error'=> TRUE, 'error_message' => 'Email not found!, Please register' ],404);
                 
             }
             return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
