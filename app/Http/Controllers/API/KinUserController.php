@@ -61,7 +61,7 @@ public $successStatus = 200;
                 $passworddata = $kindata->password;
 
                 if($emailstatus == 0){
-                    return response()->json(['error'=> TRUE, 'error_message'=>"Email not active. Please check your email for the activation code to verify your email.If you don't get email for the activation code"]); 
+                    return response()->json(['error'=> TRUE, 'error_message'=>"Email not active. Please check your email for the verification code"]); 
                 }else{
                     if (Auth::attempt(['email' => $email, 'password' => $password, 'typeuser' => 3, 'is_active' => 1])) {
                         $user = Auth::user();
@@ -221,7 +221,7 @@ public $successStatus = 200;
   
             else{
               
-                  return response()->json(['error'=> TRUE, 'error_message' => 'Email verification fail!' ],404);
+                  return response()->json(['error'=> TRUE, 'error_message' => 'Email verification fail!' ],$this-> successStatus);
                 
             }
             return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
@@ -276,7 +276,7 @@ public $successStatus = 200;
   
             else{
               
-                  return response()->json(['error'=> TRUE, 'error_message' => 'Email not found!, Please register' ],404);
+                  return response()->json(['error'=> TRUE, 'error_message' => 'Email not found!, Please register' ], $this-> successStatus);
                 
             }
             return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
@@ -324,7 +324,7 @@ public $successStatus = 200;
 
           else{
             
-                return response()->json(['error'=> TRUE, 'message' => 'Patient not found' ],404);
+                return response()->json(['error'=> TRUE, 'message' => 'Patient not found' ],$this-> successStatus);
               
           }
           return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
