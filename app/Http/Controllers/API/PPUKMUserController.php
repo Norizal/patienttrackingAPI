@@ -27,47 +27,64 @@ public $successStatus = 200;
             'password'=>'required',
          ]);
 
+         $email= $request->input('email');
+         $password = $request->input('password');
+
          if ($validator->fails()) {
-            return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
+            if (($email == "") && ($password == "")){
+                return response()->json(['error'=> TRUE, 'error_message'=>"Please enter the email and password"]); 
+            }else{
+                if ($email == ""){
+                    return response()->json(['error'=> TRUE, 'error_message'=>"Please enter the email"]); 
+                }
+                else{
+                        return response()->json(['error'=> TRUE, 'error_message'=>"Please enter the password"]); 
+                }
+            }            
+                
+            //return response()->json(['error'=> TRUE, 'error_message'=>$validator->errors()], 401);            
         }else {
-            if(Auth::attempt(['email' => request('email'), 'password' => request('password'), 'typeuser' => 2, 'is_active' => 1])){ 
-                $user = Auth::user();
-                $id =  $user->id;
-                $data = PPUKM::where('user_id',  $id)->first(); 
 
-                $emaildata = $user->email;
-                $passworddata = $user->password;
-                $emailstatus = $user->is_active;
-              
+            
+           
 
-                $email= $request->input('email');
-                $password = $request->input('password');
+            $data = User::where('email',  $email)->count(); 
 
-                        if($emaildata != $email){
-                            return response()->json(['error'=> TRUE, 'error_message'=>"Email not found"]); 
+           
+           
 
-                        }else if($emailstatus == 0){
-                            return response()->json(['error'=> TRUE, 'error_message'=>"Email not active. Please check your email for the activation code to verify your email.If you don't get email for the activation code"]); 
-                        }
-                        else{
-                            if(Hash::check($password, $passworddata)){
-                                $token =  $user->createToken('MyApp')-> accessToken;
-                                $success['name'] =  $user->name;
-                                $success['email'] =  $user->email;
-                                $success['phonenumber'] =  $data->ppukm_phonenumber;
-                                return response()->json(['error'=> FALSE, 'token'=>$token,'success' => $success], $this-> successStatus); 
-                               
-                            }else{
-                                return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"]);
-                               
-                            } 
-                        }
-                       
-                    }
-             else{ 
-                return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong"]);
-             }
-             return response()->json(['error'=> TRUE, 'error_message' => 'Internal Server Error' ],500);
+            if($data > 0) {
+                $ppukmdata = User::where('email',  $email)->first();
+                $emailstatus = $ppukmdata->is_active;
+                $passworddata = $ppukmdata->password;
+
+                if($emailstatus == 0){
+                    return response()->json(['error'=> TRUE, 'error_message'=>"Email not active. Please check your email for the verification code"]); 
+                }else{
+                    if (Auth::attempt(['email' => $email, 'password' => $password, 'typeuser' => 2, 'is_active' => 1])) {
+                        $user = Auth::user();
+                        $id =  $user->id;
+                        $data = PPUKM::where('user_id',  $id)->first(); 
+    
+                     
+                        $token =  $user->createToken('MyApp')-> accessToken;
+                        $success['name'] =  $user->name;
+                        $success['email'] =  $user->email;
+                        $success['phonenumber'] =  $data->ppukm_phonenumber;
+                        return response()->json(['error'=> FALSE, 'token'=>$token,'success' => $success], $this-> successStatus); 
+                    } else{
+                        return response()->json(['error'=> TRUE, 'error_message'=>"Password wrong!"]);
+
+                    }     
+
+                }
+
+            }else {
+                return response()->json(['error'=> TRUE, 'error_message'=>"Email not found!Please register first"]); 
+            }
+
+
+           
         }
     }
 /** 
